@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using LogManager.Api.Helpers;
 using LogManager.Api.ViewModels;
 using LogManager.Business.Interfaces;
 using LogManager.Business.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace LogManager.Api.Controllers
 {
@@ -11,6 +15,8 @@ namespace LogManager.Api.Controllers
     {
         private readonly IRequestLogService _requestLogService;
         private readonly IMapper _mapper;
+
+        private readonly string _defaultExtension = ".TXT";
 
         public RequestLogController(IRequestLogService requestLogService, IMapper mapper)
         {
@@ -34,7 +40,24 @@ namespace LogManager.Api.Controllers
             var requestLog = _mapper.Map<RequestLog>(requestLogViewModel);
             _requestLogService.Insert(requestLog);
 
-            return Ok(requestLogViewModel);    
+            return Ok(requestLogViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult InsertFromFile(IFormFile iFormFile)
+        {
+            var fileExtension = Path.GetExtension(iFormFile.FileName).ToUpper();
+            if (fileExtension != _defaultExtension)
+                return BadRequest("Arquivo com extensão incorreta. Verifique o arquivo e tente novamente.");
+
+            var requestLogsViewModel = FromFileHelper.ReadRequestLogFromFile(iFormFile);
+            var requestLogs = _mapper.Map<List<RequestLog>>(requestLogsViewModel);
+            var inserted = _requestLogService.InsertRange(requestLogs) > 0;
+
+            if (inserted)
+                return Ok("Dados importados com sucesso.");
+            else
+                return BadRequest("Falha ao tentar importar os dados. Verifique o arquivo e tente novamente.");
         }
 
         // POST: RequestLogController/Edit/5

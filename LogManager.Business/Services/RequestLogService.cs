@@ -14,15 +14,18 @@ namespace LogManager.Business.Services
             _requestLogRepository = requestLogRepository;
         }
 
-        public void InsertAndDoNotUpdate(RequestLog requestLog)
+        public int InsertRange(IEnumerable<RequestLog> requestLogs)
         {
-            _requestLogRepository.Insert(requestLog);
+            foreach (var requestLog in requestLogs)
+                _requestLogRepository.Insert(requestLog);
+            
+            return _requestLogRepository.SaveChanges();
         }
 
-        public void Insert(RequestLog requestLog)
+        public int Insert(RequestLog requestLog)
         {
             _requestLogRepository.Insert(requestLog);
-            _requestLogRepository.SaveChanges();
+            return _requestLogRepository.SaveChanges();
         }
 
         public RequestLog Read(Guid id)
@@ -30,10 +33,10 @@ namespace LogManager.Business.Services
             return _requestLogRepository.Read(id);
         }
 
-        public void Update(RequestLog requestLog)
+        public int Update(RequestLog requestLog)
         {
             _requestLogRepository.Update(requestLog);
-            _requestLogRepository.SaveChanges();
+            return _requestLogRepository.SaveChanges();
         }
 
         public IEnumerable<RequestLog> List()
@@ -41,10 +44,10 @@ namespace LogManager.Business.Services
             return _requestLogRepository.List();
         }
 
-        public void Delete(Guid id)
+        public int Delete(Guid id)
         {
             _requestLogRepository.Delete(id);
-            _requestLogRepository.SaveChanges();
+            return _requestLogRepository.SaveChanges();
         }
 
         public void Dispose()

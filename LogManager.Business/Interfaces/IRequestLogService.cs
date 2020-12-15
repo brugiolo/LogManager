@@ -6,11 +6,11 @@ namespace LogManager.Business.Interfaces
 {
     public interface IRequestLogService : IDisposable
     {
-        void Insert(RequestLog requestLog);
-        void InsertAndDoNotUpdate(RequestLog requestLog);
+        int Insert(RequestLog requestLog);
+        int InsertRange(IEnumerable<RequestLog> requestLog);
         RequestLog Read(Guid id);
-        void Update(RequestLog requestLog);
-        void Delete(Guid id);
+        int Update(RequestLog requestLog);
+        int Delete(Guid id);
         IEnumerable<RequestLog> List();
     }
 }

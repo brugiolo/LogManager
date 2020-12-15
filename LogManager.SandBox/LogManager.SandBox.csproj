@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LogManager.Api\LogManager.Api.csproj" />
+    <ProjectReference Include="..\LogManager.Business\LogManager.Business.csproj" />
+    <ProjectReference Include="..\LogManager.Data\LogManager.Data.csproj" />
+  </ItemGroup>
+
+</Project>
