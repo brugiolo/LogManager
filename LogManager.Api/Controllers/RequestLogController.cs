@@ -11,6 +11,8 @@ using System.IO;
 
 namespace LogManager.Api.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class RequestLogController : Controller
     {
         private readonly IRequestLogService _requestLogService;
@@ -24,17 +26,15 @@ namespace LogManager.Api.Controllers
             _mapper = mapper;
         }
 
-        // GET: RequestLogController/Details/5
-        public ActionResult<RequestLogViewModel> Details(Guid id)
+        [HttpGet("{id}")]
+        public ActionResult<RequestLogViewModel> Read(Guid id)
         {
             var requestLog = _requestLogService.Read(id);
 
             return _mapper.Map<RequestLogViewModel>(requestLog);
         }
 
-        // POST: RequestLogController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Insert(RequestLogViewModel requestLogViewModel)
         {
             var requestLog = _mapper.Map<RequestLog>(requestLogViewModel);
@@ -43,27 +43,25 @@ namespace LogManager.Api.Controllers
             return Ok(requestLogViewModel);
         }
 
-        [HttpPost]
+        [HttpPost("InsertFromFile")]
         public IActionResult InsertFromFile(IFormFile iFormFile)
         {
             var fileExtension = Path.GetExtension(iFormFile.FileName).ToUpper();
             if (fileExtension != _defaultExtension)
-                return BadRequest("Arquivo com extensão incorreta. Verifique o arquivo e tente novamente.");
+                return BadRequest("Incorrect file extension. Check the file and try again.");
 
             var requestLogsViewModel = FromFileHelper.ReadRequestLogFromFile(iFormFile);
             var requestLogs = _mapper.Map<List<RequestLog>>(requestLogsViewModel);
             var inserted = _requestLogService.InsertRange(requestLogs) > 0;
 
             if (inserted)
-                return Ok("Dados importados com sucesso.");
+                return Ok("Data imported successfully.");
             else
-                return BadRequest("Falha ao tentar importar os dados. Verifique o arquivo e tente novamente.");
+                return BadRequest("Failed to try to import the data. Check the file and try again.");
         }
 
-        // POST: RequestLogController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, RequestLogViewModel requestLogViewModel)
+        [HttpPut("{id}")]
+        public ActionResult Update(Guid id, RequestLogViewModel requestLogViewModel)
         {
             if (!ModelState.IsValid || id != requestLogViewModel.Id)
                 return BadRequest();
@@ -82,7 +80,7 @@ namespace LogManager.Api.Controllers
             return Ok(requestLogViewModel);
         }
 
-        // GET: RequestLogController/Delete/5
+        [HttpDelete("{id}")]
         public ActionResult Delete(Guid id)
         {
             var requestLog = _requestLogService.Read(id);

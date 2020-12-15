@@ -35,6 +35,7 @@ namespace LogManager.Api.Helpers
 
             return new RequestLogViewModel
             {
+                Id = Guid.NewGuid(),
                 Ip = ReadIpFromLine(lineValues),
                 Adress = ReadAdressFromLine(lineValues),
                 Client = ReadClientFromLine(lineValues),
@@ -57,7 +58,7 @@ namespace LogManager.Api.Helpers
 
         private static string ReadClientFromLine(string[] lineValues)
         {
-            return lineValues[7].Trim();
+            return lineValues[7].Replace(@"\", "").Replace("\"", "").Trim();
         }
 
         private static long ReadContentLenghtFromLine(string[] lineValues)
@@ -67,24 +68,19 @@ namespace LogManager.Api.Helpers
 
         private static DateTime ReadDateTimeFromLine(string[] lineValues)
         {
-            var dateTimeInformation = lineValues[3].Replace("[", "").Split(":");
+            var dateInformation = lineValues[3].Replace("[", "");
+            var timeInformation = lineValues[4].Replace("]", "");
+            var dateTimeInformation = dateInformation + timeInformation;
 
-            var dateTime = DateTime.ParseExact("04/Jan/2003:14:56:50 +0200", "dd/MMM/yyyy:HH:mm:ss zzz", CultureInfo.InvariantCulture);
+            var utcDateTime = DateTime.ParseExact(dateTimeInformation, 
+                "dd/MMM/yyyy:HH:mm:sszzz", CultureInfo.CurrentCulture).ToUniversalTime();
 
-            var dateTimeValue = DateTime.Parse(dateTimeInformation[0]);
-
-            var date = dateTimeInformation[0];
-            var hour = dateTimeInformation[1];
-            var minute = dateTimeInformation[2];
-            var seconds = dateTimeInformation[3];
-            var timeZone = lineValues[4].Replace("]", "").Trim();
-
-            return new DateTime();
+            return utcDateTime;
         }
 
         private static string ReadMethodFromLine(string[] lineValues)
         {
-            return lineValues[5].Trim();
+            return lineValues[5].Replace(@"\", "").Replace("\"", "").Trim();
         }
 
         private static int ReadStatusFromLine(string[] lineValues)

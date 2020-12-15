@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Linq;
 
 namespace LogManager.Api.Configurations
 {
@@ -23,6 +24,8 @@ namespace LogManager.Api.Configurations
                             Url = new Uri("https://www.linkedin.com/in/rafael-brugiolo/")
                         }
                     });
+                
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
 
             return services;
@@ -30,10 +33,11 @@ namespace LogManager.Api.Configurations
 
         public static IApplicationBuilder UseSwaggerConfig(this IApplicationBuilder app)
         {
+            app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Avaliador de Idéias");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "LogManager");
             });
 
             return app;
