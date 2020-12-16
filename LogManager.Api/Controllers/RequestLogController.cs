@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace LogManager.Api.Controllers
 {
@@ -34,6 +35,14 @@ namespace LogManager.Api.Controllers
             return _mapper.Map<RequestLogViewModel>(requestLog);
         }
 
+        [HttpGet("List")]
+        public ActionResult<IEnumerable<RequestLogViewModel>> List()
+        {
+            var requestLog = _requestLogService.List();
+
+            return _mapper.Map<List<RequestLogViewModel>>(requestLog);
+        }
+
         [HttpPost]
         public ActionResult Insert(RequestLogViewModel requestLogViewModel)
         {
@@ -44,13 +53,18 @@ namespace LogManager.Api.Controllers
         }
 
         [HttpPost("InsertFromFile")]
-        public IActionResult InsertFromFile(IFormFile iFormFile)
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult InsertFromFile()
         {
-            var fileExtension = Path.GetExtension(iFormFile.FileName).ToUpper();
+            var formFile = Request.Form.Files.FirstOrDefault();
+            if (formFile == null)
+                return BadRequest("Fail trying to get the content. Check the file and try again.");
+
+            var fileExtension = Path.GetExtension(formFile.FileName).ToUpper();
             if (fileExtension != _defaultExtension)
                 return BadRequest("Incorrect file extension. Check the file and try again.");
 
-            var requestLogsViewModel = FromFileHelper.ReadRequestLogFromFile(iFormFile);
+            var requestLogsViewModel = FromFileHelper.ReadRequestLogFromFile(formFile);
             var requestLogs = _mapper.Map<List<RequestLog>>(requestLogsViewModel);
             var inserted = _requestLogService.InsertRange(requestLogs) > 0;
 
