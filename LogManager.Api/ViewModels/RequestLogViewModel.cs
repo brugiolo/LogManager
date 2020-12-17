@@ -9,7 +9,7 @@ namespace LogManager.Api.ViewModels
         public DateTime DateTime { get; set; }
         public string Method { get; set; }
         public string Adress { get; set; }
-        public string Client { get; set; }
+        public string UserAgent { get; set; }
         public int Status { get; set; }
         public long ContentLength { get; set; }
     }

@@ -38,7 +38,7 @@ namespace LogManager.Api.Helpers
                 Id = Guid.NewGuid(),
                 Ip = ReadIpFromLine(lineValues),
                 Adress = ReadAdressFromLine(lineValues),
-                Client = ReadClientFromLine(lineValues),
+                UserAgent = ReadUserAgentFromLine(lineValues),
                 ContentLength = ReadContentLenghtFromLine(lineValues),
                 DateTime = ReadDateTimeFromLine(lineValues),
                 Method = ReadMethodFromLine(lineValues),
@@ -56,7 +56,7 @@ namespace LogManager.Api.Helpers
             return lineValues[6].Trim();
         }
 
-        private static string ReadClientFromLine(string[] lineValues)
+        private static string ReadUserAgentFromLine(string[] lineValues)
         {
             return lineValues[7].Replace(@"\", "").Replace("\"", "").Trim();
         }

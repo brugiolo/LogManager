@@ -36,17 +36,11 @@ namespace LogManager.Api.Controllers
         }
 
         [HttpGet("List")]
-        public ActionResult<IEnumerable<RequestLogViewModel>> List()
+        public ActionResult<IEnumerable<RequestLogViewModel>> List(string text)
         {
-            var requestLog = _requestLogService.List();
-
-            return _mapper.Map<List<RequestLogViewModel>>(requestLog);
-        }
-
-        [HttpGet("Search")]
-        public ActionResult<IEnumerable<RequestLogViewModel>> Search(string text)
-        {
-            var requestLog = _requestLogService.Search(text);
+            var requestLog = string.IsNullOrEmpty(text)
+                ? _requestLogService.List()
+                : _requestLogService.Search(text);
 
             return _mapper.Map<List<RequestLogViewModel>>(requestLog);
         }
@@ -90,7 +84,7 @@ namespace LogManager.Api.Controllers
 
             var requestLog = _requestLogService.Read(id);
             requestLog.Adress = requestLogViewModel.Adress;
-            requestLog.Client = requestLogViewModel.Client;
+            requestLog.UserAgent = requestLogViewModel.UserAgent;
             requestLog.ContentLength = requestLogViewModel.ContentLength;
             requestLog.DateTime = requestLogViewModel.DateTime;
             requestLog.Ip = requestLogViewModel.Ip;

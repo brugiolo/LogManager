@@ -17,7 +17,7 @@ namespace LogManager.Business.Models
         public string Adress { get; set; }
         [Required]
         [MaxLength(20)]
-        public string Client { get; set; }
+        public string UserAgent { get; set; }
         [Required]
         public int Status { get; set; }
         [Required]

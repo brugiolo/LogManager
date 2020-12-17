@@ -49,9 +49,9 @@ namespace LogManager.Business.Services
         {
             var logs = (
                 from log in _requestLogRepository.List()
-                where log.Ip.Contains(text)
-                    || log.Adress.Contains(text)
-                    || log.Method.Contains(text)
+                where log.Ip.Contains(text, StringComparison.OrdinalIgnoreCase)
+                    || log.Adress.Contains(text, StringComparison.OrdinalIgnoreCase)
+                    || log.Method.Contains(text, StringComparison.OrdinalIgnoreCase)
                     || log.Status.ToString() == text
                 select log
                 );
