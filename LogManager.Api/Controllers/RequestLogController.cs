@@ -43,6 +43,14 @@ namespace LogManager.Api.Controllers
             return _mapper.Map<List<RequestLogViewModel>>(requestLog);
         }
 
+        [HttpGet("Search")]
+        public ActionResult<IEnumerable<RequestLogViewModel>> Search(string text)
+        {
+            var requestLog = _requestLogService.Search(text);
+
+            return _mapper.Map<List<RequestLogViewModel>>(requestLog);
+        }
+
         [HttpPost]
         public ActionResult Insert(RequestLogViewModel requestLogViewModel)
         {

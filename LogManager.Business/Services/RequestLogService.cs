@@ -2,6 +2,7 @@
 using LogManager.Business.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogManager.Business.Services
 {
@@ -42,6 +43,20 @@ namespace LogManager.Business.Services
         public IEnumerable<RequestLog> List()
         {
             return _requestLogRepository.List();
+        }
+
+        public IEnumerable<RequestLog> Search(string text)
+        {
+            var logs = (
+                from log in _requestLogRepository.List()
+                where log.Ip.Contains(text)
+                    || log.Adress.Contains(text)
+                    || log.Method.Contains(text)
+                    || log.Status.ToString() == text
+                select log
+                );
+
+            return logs;
         }
 
         public int Delete(Guid id)

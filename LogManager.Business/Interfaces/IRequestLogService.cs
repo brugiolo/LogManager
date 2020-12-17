@@ -12,5 +12,6 @@ namespace LogManager.Business.Interfaces
         int Update(RequestLog requestLog);
         int Delete(Guid id);
         IEnumerable<RequestLog> List();
+        IEnumerable<RequestLog> Search(string text);
     }
 }
